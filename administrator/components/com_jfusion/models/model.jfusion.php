@@ -848,7 +848,9 @@ class JFusionFunction
         } else {
             $url = $jfusionPluginURL[$itemid];
         }
-        return $url;
+        //return $url;        
+        return parse_url($url,PHP_URL_PATH);
+        
     }
 
     /**
