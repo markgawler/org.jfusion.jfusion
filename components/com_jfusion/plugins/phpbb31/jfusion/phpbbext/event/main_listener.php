@@ -24,6 +24,8 @@ class main_listener implements EventSubscriberInterface
 		return array(
 //			'core.common' => 'core_common',
 			'core.user_setup' => 'core_user_setup',
+			'core.auth_login_session_create_before' => 'auth_login_session_create_before',
+			'core.session_kill_after' => 'session_kill_after',
 		);
 	}
 
@@ -45,9 +47,32 @@ class main_listener implements EventSubscriberInterface
 		$this->user = $user;
 		$this->root_path = $root_path;
 		$this->php_ext = $php_ext;
-		
 	}
 
+	
+	/**
+	 * @param \Symfony\Component\EventDispatcher\Event $event
+	 */
+	public function auth_login_session_create_before($event)
+	{
+		if (isset($event['login']) && isset($event['login']['status']) && $event['login']['status'] == LOGIN_SUCCESS)
+		{
+			error_log("ext - LOGIN_SUCCESS" );
+		}
+		else 
+		{
+			error_log("ext - LOGIN_Fail" );
+		}
+	}
+	
+	/**
+	 * @param \Symfony\Component\EventDispatcher\Event $event
+	 */
+	public function session_kill_after($event)
+	{
+		error_log("ext - LOGOUT" );
+	}
+	
 	/**
 	 * @param \Symfony\Component\EventDispatcher\Event $event
 	 */
