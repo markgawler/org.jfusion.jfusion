@@ -41,12 +41,13 @@ class main_listener implements EventSubscriberInterface
 	* @param \phpbb\config\db	$config		Controller helper object
 	* @param \phpbb\user			$user	Template object
 	*/
-	public function __construct(\phpbb\config\db $config, \phpbb\user $user, $root_path,  $php_ext)
+	public function __construct(\phpbb\config\db $config, \phpbb\user $user, \phpbb\request\request $request, $root_path,  $php_ext)
 	{
 		$this->config = $config;
 		$this->user = $user;
+		$this->request = $request;
 		$this->root_path = $root_path;
-		$this->php_ext = $php_ext;
+		$this->php_ext = $php_ext;		
 	}
 
 	
@@ -54,14 +55,52 @@ class main_listener implements EventSubscriberInterface
 	 * @param \Symfony\Component\EventDispatcher\Event $event
 	 */
 	public function auth_login_session_create_before($event)
-	{
-		if (isset($event['login']) && isset($event['login']['status']) && $event['login']['status'] == LOGIN_SUCCESS)
-		{
-			error_log("ext - LOGIN_SUCCESS" );
-		}
-		else 
-		{
-			error_log("ext - LOGIN_Fail" );
+	{		
+		global $JFusionActive;
+		
+		if (isset($event['login']) && isset($event['login']['status']) && $event['login']['status'] == LOGIN_SUCCESS && !$event['admin'] && empty($JFusionActive))
+		{				
+			$joomla = $this->startJoomla();
+				
+			//backup phpbb globals
+			$joomla->backupGlobal();
+			$this->request->enable_super_globals();
+
+			$username = $event['username']; // This is empty when using Oauth login (Facebook)				
+			
+			// The password in $event['login']['user_row']['user_password'] is hashed, use password from request
+			// instead, but this still dosn't work for Oauth logins (Facebook).
+			$password = $this->request->untrimmed_variable('password', '', false, \phpbb\request\request_interface::POST);
+			
+			if (empty($username) || empty($password))
+			{
+				if (empty($username))
+				{
+					error_log('No username ');
+					$username = $event['login']['user_row']['username'];
+				}
+				if (empty($password))
+				{
+					error_log('No password ');
+					$username = $event['login']['user_row']['username'];
+				}	
+			}
+			
+			else 
+			{
+				//detect if the session should be remembered
+				if (!empty($event['autologin'])) {
+					$remember = 1;
+				} else {
+					$remember = 0;
+				}
+				$joomla->setActivePlugin($this->config['jfusion_phpbbext_jname']);
+		
+				$joomla->login($username, $password, $remember);
+			}					
+			//backup phpbb globals
+			$joomla->restoreGlobal();
+			$this->request->disable_super_globals();
 		}
 	}
 	
@@ -69,8 +108,25 @@ class main_listener implements EventSubscriberInterface
 	 * @param \Symfony\Component\EventDispatcher\Event $event
 	 */
 	public function session_kill_after($event)
-	{
-		error_log("ext - LOGOUT" );
+	{		
+		//check to see if JFusion is not active
+		global $JFusionActive;
+		if (empty($JFusionActive)) {
+			$joomla = $this->startJoomla();
+		
+			//backup phpbb globals
+			$joomla->backupGlobal();
+			$this->request->enable_super_globals();
+		
+			//define that the phpBB3 JFusion plugin needs to be excluded
+			$joomla->setActivePlugin($this->config['jfusion_phpbbext_jname']);
+		
+			$joomla->logout();
+			
+			//backup phpbb globals
+			$joomla->restoreGlobal();
+			$this->request->disable_super_globals();
+		}
 	}
 	
 	/**
@@ -108,5 +164,15 @@ class main_listener implements EventSubscriberInterface
 				}
 			}
 		}
+	}
+	
+	/**
+	 * @return \JFusionAPIInternal
+	 */
+	function startJoomla() {
+		define('_JFUSIONAPI_INTERNAL', true);
+		$apipath = $this->config['jfusion_phpbbext_apipath'];
+		require_once $apipath . DIRECTORY_SEPARATOR  . 'jfusionapi.php';
+		return \JFusionAPIInternal::getInstance();
 	}
 }

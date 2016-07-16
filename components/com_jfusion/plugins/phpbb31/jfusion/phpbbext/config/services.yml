@@ -12,6 +12,7 @@ services:
         arguments:
             - @config
             - @user
+            - @request
             - %core.root_path%
             - %core.php_ext%
                         
