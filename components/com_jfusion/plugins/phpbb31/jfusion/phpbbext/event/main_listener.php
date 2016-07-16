@@ -82,7 +82,6 @@ class main_listener implements EventSubscriberInterface
 				if (empty($password))
 				{
 					error_log('No password ');
-					$username = $event['login']['user_row']['username'];
 				}	
 			}
 			
