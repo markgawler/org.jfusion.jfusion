@@ -59,7 +59,7 @@ class main_listener implements EventSubscriberInterface
 		global $JFusionActive;
 		
 		if (isset($event['login']) && isset($event['login']['status']) && $event['login']['status'] == LOGIN_SUCCESS && !$event['admin'] && empty($JFusionActive))
-		{				
+		{		
 			$joomla = $this->startJoomla();
 				
 			//backup phpbb globals
@@ -82,8 +82,7 @@ class main_listener implements EventSubscriberInterface
 				if (empty($password))
 				{
 					error_log('No password ');
-					$username = $event['login']['user_row']['username'];
-				}	
+				}					
 			}
 			
 			else 
@@ -159,8 +158,8 @@ class main_listener implements EventSubscriberInterface
 					if (strpos('?', $url) !== false && strpos('?', $page) !== false) {
 						$page = str_replace('?', '&', $page);
 					}
-
-				    header('Location: ' . $url . $page);
+					header('Location: ' . $url . $page);
+					exit();
 				}
 			}
 		}
