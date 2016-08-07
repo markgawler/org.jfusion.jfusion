@@ -21,12 +21,16 @@ class main_listener implements EventSubscriberInterface
 {
 	static public function getSubscribedEvents()
 	{
-		return array(
-//			'core.common' => 'core_common',
-			'core.user_setup' => 'core_user_setup',
-			'core.auth_login_session_create_before' => 'auth_login_session_create_before',
-			'core.session_kill_after' => 'session_kill_after',
-		);
+		if (defined('IN_MOBIQUO')){
+			return array();
+		}else{
+			return array(
+	//			'core.common' => 'core_common',
+				'core.user_setup' => 'core_user_setup',
+				'core.auth_login_session_create_before' => 'auth_login_session_create_before',
+				'core.session_kill_after' => 'session_kill_after',
+			);
+		}
 	}
 
 	/* @var \phpbb\config\db */
@@ -35,6 +39,9 @@ class main_listener implements EventSubscriberInterface
 	/* @var \phpbb\user */
 	protected $user;
 
+	/* @var \phpbb\request\request */
+	protected $request;
+	
 	/**
 	* Constructor
 	*
@@ -55,7 +62,7 @@ class main_listener implements EventSubscriberInterface
 	 * @param \Symfony\Component\EventDispatcher\Event $event
 	 */
 	public function auth_login_session_create_before($event)
-	{		
+	{		        	
 		global $JFusionActive;
 		
 		if (isset($event['login']) && isset($event['login']['status']) && $event['login']['status'] == LOGIN_SUCCESS && !$event['admin'] && empty($JFusionActive))
@@ -110,7 +117,8 @@ class main_listener implements EventSubscriberInterface
 	{		
 		//check to see if JFusion is not active
 		global $JFusionActive;
-		if (empty($JFusionActive)) {
+		if (empty($JFusionActive))
+		{
 			$joomla = $this->startJoomla();
 		
 			//backup phpbb globals
@@ -154,7 +162,7 @@ class main_listener implements EventSubscriberInterface
 			}
 
 			if (empty($direct_access)) {
-				if (!defined('_JEXEC') && !defined('ADMIN_START') && !defined('IN_MOBIQUO')) {
+				if (!defined('_JEXEC') && !defined('ADMIN_START')) {
 					if (strpos('?', $url) !== false && strpos('?', $page) !== false) {
 						$page = str_replace('?', '&', $page);
 					}
