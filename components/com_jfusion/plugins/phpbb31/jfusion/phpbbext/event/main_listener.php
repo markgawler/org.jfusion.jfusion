@@ -25,7 +25,6 @@ class main_listener implements EventSubscriberInterface
 			return array();
 		}else{
 			return array(
-	//			'core.common' => 'core_common',
 				'core.user_setup' => 'core_user_setup',
 				'core.auth_login_session_create_before' => 'auth_login_session_create_before',
 				'core.session_kill_after' => 'session_kill_after',
@@ -140,10 +139,11 @@ class main_listener implements EventSubscriberInterface
 	 * @param \Symfony\Component\EventDispatcher\Event $event
 	 */
 	public function core_user_setup($event)
-	{
+	{		
 		$page = $this->user->page['page'];
 		$url = $this->config['jfusion_phpbbext_redirect_url'];
-		if (strpos($page, 'feed.php') !== 0 && !empty($url)) {
+		if (strpos($page, 'feed.php') !== 0 && !empty($url) && $this->config['jfusion_phpbbext_frameless'] == 1)
+		{
 			$direct_access = array();
 			if ($this->config['jfusion_phpbbext_direct_access']) {
 				
@@ -172,6 +172,7 @@ class main_listener implements EventSubscriberInterface
 			}
 		}
 	}
+		
 	
 	/**
 	 * @return \JFusionAPIInternal

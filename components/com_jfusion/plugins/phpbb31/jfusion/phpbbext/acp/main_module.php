@@ -40,7 +40,9 @@ class main_module
 
 			$config->set('jfusion_phpbbext_redirect_login', $request->variable('jfusion_phpbbext_redirect_login', 0));
 			$config->set('jfusion_phpbbext_redirect_logout', $request->variable('jfusion_phpbbext_redirect_logout', 0));
-
+			
+			$config->set('jfusion_phpbbext_frameless', $request->variable('jfusion_phpbbext_frameless', 0));
+				
 			trigger_error($user->lang('ACP_JFUSION_PHPBBEXT_SETTING_SAVED') . adm_back_link($this->u_action));
 		}
 
@@ -58,6 +60,9 @@ class main_module
 
 			'JFUSION_PHPBBEXT_REDIRECT_LOGIN'		=> $config['jfusion_phpbbext_redirect_login'],
 			'JFUSION_PHPBBEXT_REDIRECT_LOGOUT'		=> $config['jfusion_phpbbext_redirect_logout'],
+				
+			'JFUSION_PHPBBEXT_FRAMELESS'		=> $config['jfusion_phpbbext_frameless'],
+
 		));
 	}
 }

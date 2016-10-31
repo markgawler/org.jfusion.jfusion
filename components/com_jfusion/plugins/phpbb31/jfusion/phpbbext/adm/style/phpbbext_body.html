@@ -69,7 +69,17 @@
                 <input type="radio" class="radio" name="jfusion_phpbbext_redirect_logout" value="0" <!-- IF not JFUSION_PHPBBEXT_REDIRECT_LOGOUT -->checked="checked"<!-- ENDIF --> /> {L_NO}
             </dd>
         </dl>
-
+        
+        <dl>
+            <dt>
+                <label for="jfusion_phpbbext_frameless">{L_ACP_JFUSION_PHPBBEXT_FRAMELESS}</label>
+            </dt>
+            <dd>
+                <input type="radio" class="radio" name="jfusion_phpbbext_frameless" value="1" <!-- IF JFUSION_PHPBBEXT_FRAMELESS -->checked="checked"<!-- ENDIF -->/> {L_YES} &nbsp;
+                <input type="radio" class="radio" name="jfusion_phpbbext_frameless" value="0" <!-- IF not JFUSION_PHPBBEXT_FRAMELESS -->checked="checked"<!-- ENDIF --> /> {L_NO}
+            </dd>
+        </dl>
+        
 		<p class="submit-buttons">
 			<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
 			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />

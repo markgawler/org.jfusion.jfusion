@@ -37,5 +37,9 @@ $lang = array_merge($lang, array(
 	'ACP_JFUSION_PHPBBEXT_REDIRECT_LOGOUT'			=> 'Redirect after logout',
 
 
-	'ACP_JFUSION_PHPBBEXT_SETTING_SAVED'	=> 'Settings have been saved successfully!'
+	'ACP_JFUSION_PHPBBEXT_SETTING_SAVED'	=> 'Settings have been saved successfully!',
+
+	'ACP_JFUSION_PHPBBEXT_FRAMELESS' =>  'Frameless mode'
+
+		
 ));
