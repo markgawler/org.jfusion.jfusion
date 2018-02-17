@@ -826,7 +826,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			define('JPATH_PLATFORM', JPATH_LIBRARIES);
 
 			if (!class_exists('JVersion')) {
-				include_once(JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'version' . DIRECTORY_SEPARATOR . 'version.php');
+				include_once(JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Version.php');
 			}
 
 			include_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'import.php';
