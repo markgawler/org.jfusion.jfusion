@@ -375,8 +375,8 @@ class JFusionForum_phpbb31 extends JFusionForum
         //determine if this user has permission to view the forum
         if (is_array($forumids)) {
 	        foreach($forumids as $k => $f) {
-	            if (!$phpbb_acl[$f]) {
-	                unset($forumids[$k]);
+				if (!array_key_exists($f,$phpbb_acl)) {
+					unset($forumids[$k]);
 	            }
 	        }
         }
