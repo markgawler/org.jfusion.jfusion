@@ -1662,8 +1662,9 @@ $/Dx", $string)) return true;
                     $this->Internal_CleanupWSByPoppingStack(@$rule['after_tag'], $output);
                     $tag_body = $this->Internal_CollectTextReverse($output, count($output) - 1, $end);
                     $this->Internal_CleanupWSByPoppingStack(@$rule['before_tag'], $this->stack);
-                    $this->Internal_UpdateParamsForMissingEndTag(@$token[BBCODE_STACK_TAG]);
-                    $tag_output = $this->DoTag(BBCODE_OUTPUT, $name, @$token[BBCODE_STACK_TAG]['_default'], @$token[BBCODE_STACK_TAG], $tag_body);
+                    #$this->Internal_UpdateParamsForMissingEndTag(@$token[BBCODE_STACK_TAG]);
+					$token[BBCODE_STACK_TAG]['_endtag'] = $this->Internal_UpdateParamsForMissingEndTag($token[BBCODE_STACK_TAG]['_name']);
+					$tag_output = $this->DoTag(BBCODE_OUTPUT, $name, @$token[BBCODE_STACK_TAG]['_default'], @$token[BBCODE_STACK_TAG], $tag_body);
                     $output = Array(Array(BBCODE_STACK_TOKEN => BBCODE_TEXT, BBCODE_STACK_TAG => false, BBCODE_STACK_TEXT => $tag_output, BBCODE_STACK_CLASS => $this->current_class));
                 }
             }
@@ -1971,9 +1972,10 @@ $/Dx", $string)) return true;
     }
 
     /**
-     * @param $params
+     * @param $name
+	 * @return string
      */
-    function Internal_UpdateParamsForMissingEndTag(&$params) {
+    function Internal_UpdateParamsForMissingEndTag($name) {
         switch ($this->tag_marker) {
             case '[':
                 $tail_marker = ']';
@@ -1991,7 +1993,7 @@ $/Dx", $string)) return true;
                 $tail_marker = $this->tag_marker;
             break;
         }
-        $params['_endtag'] = $this->tag_marker . '/' . $params['_name'] . $tail_marker;
+        return $this->tag_marker . '/' . $name . $tail_marker;
     }
 
     /**
